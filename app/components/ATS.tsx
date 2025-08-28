@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 interface Suggestion {
   type: "good" | "improve";
@@ -11,54 +11,198 @@ interface ATSProps {
 }
 
 const ATS: React.FC<ATSProps> = ({ score, suggestions }) => {
-  // Determine background gradient based on score
-  const gradientClass = score > 69
-    ? 'from-green-100'
-    : score > 49
-      ? 'from-yellow-100'
-      : 'from-red-100';
+  // ✅ Gradient colors based on score
+  const getGradientColors = () => {
+    if (score > 69) {
+      return {
+        background: 'linear-gradient(to bottom, rgba(220, 252, 231, 0.9), rgba(240, 253, 244, 1), white)'
+      };
+    } else if (score > 49) {
+      return {
+        background: 'linear-gradient(to bottom, rgba(254, 249, 195, 0.9), rgba(254, 252, 232, 1), white)'
+      };
+    } else {
+      return {
+        background: 'linear-gradient(to bottom, rgba(254, 226, 226, 0.9), rgba(254, 242, 242, 1), white)'
+      };
+    }
+  };
 
-  // Determine icon based on score
-  const iconSrc = score > 69
-    ? '/icons/ats-good.svg'
-    : score > 49
-      ? '/icons/ats-warning.svg'
-      : '/icons/ats-bad.svg';
+  // ✅ Icon
+  const iconSrc =
+    score > 69
+      ? "/icons/ats-good.svg"
+      : score > 49
+      ? "/icons/ats-warning.svg"
+      : "/icons/ats-bad.svg";
 
-  // Determine subtitle based on score
-  const subtitle = score > 69
-    ? 'Great Job!'
-    : score > 49
-      ? 'Good Start'
-      : 'Needs Improvement';
+  // ✅ Subtitle
+  const subtitle =
+    score > 69 ? "Great Job!" : score > 49 ? "Good Start" : "Needs Improvement";
+
+  // ✅ Progress bar color
+  const getProgressBarColor = () => {
+    if (score > 69) return '#10b981'; // green-500
+    if (score > 49) return '#f59e0b'; // yellow-500
+    return '#ef4444'; // red-500
+  };
 
   return (
-    <div className={`bg-gradient-to-b ${gradientClass} to-white rounded-2xl shadow-md w-full p-6`}>
-      {/* Top section with icon and headline */}
-      <div className="flex items-center gap-4 mb-6">
-        <img src={iconSrc} alt="ATS Score Icon" className="w-12 h-12" />
+    <div
+      style={{
+        ...getGradientColors(),
+        borderRadius: '16px',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        width: '100%',
+        padding: '32px',
+        transition: 'all 0.3s ease-in-out'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+      }}
+    >
+      {/* Top Section */}
+      <div 
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px',
+          marginBottom: '24px'
+        }}
+      >
+        <img 
+          src={iconSrc} 
+          alt="ATS Score Icon" 
+          style={{
+            width: '56px',
+            height: '56px'
+          }}
+        />
         <div>
-          <h2 className="text-2xl font-bold">ATS Score - {score}/100</h2>
+          <h2 
+            style={{
+              fontSize: '30px',
+              fontWeight: '800',
+              color: '#111827',
+              margin: 0,
+              marginBottom: '4px'
+            }}
+          >
+            ATS Score –{' '}
+            <span 
+              style={{
+                background: 'linear-gradient(to right, #6366f1, #a855f7)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              {score}/100
+            </span>
+          </h2>
+          <p 
+            style={{
+              color: '#4b5563',
+              margin: 0,
+              fontSize: '16px'
+            }}
+          >
+            {subtitle}
+          </p>
         </div>
       </div>
 
-      {/* Description section */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">{subtitle}</h3>
-        <p className="text-gray-600 mb-4">
-          This score represents how well your resume is likely to perform in Applicant Tracking Systems used by employers.
-        </p>
+      {/* Progress Bar */}
+      <div 
+        style={{
+          width: '100%',
+          backgroundColor: '#e5e7eb',
+          borderRadius: '9999px',
+          height: '12px',
+          marginBottom: '32px',
+          overflow: 'hidden'
+        }}
+      >
+        <div
+          style={{
+            height: '12px',
+            borderRadius: '9999px',
+            backgroundColor: getProgressBarColor(),
+            width: `${score}%`,
+            transition: 'width 0.5s ease-in-out'
+          }}
+        />
+      </div>
 
-        {/* Suggestions list */}
-        <div className="space-y-3">
+      {/* Suggestions */}
+      <div 
+        style={{
+          marginBottom: '24px'
+        }}
+      >
+        <h3 
+          style={{
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#1f2937',
+            marginBottom: '12px',
+            margin: 0
+          }}
+        >
+          Suggestions
+        </h3>
+        <div 
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}
+        >
           {suggestions.map((suggestion, index) => (
-            <div key={index} className="flex items-start gap-3">
+            <div
+              key={index}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                padding: '12px',
+                borderRadius: '8px',
+                backgroundColor: 'white',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                transition: 'all 0.2s ease-in-out'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+              }}
+            >
               <img
-                src={suggestion.type === "good" ? "/icons/check.svg" : "/icons/warning.svg"}
+                src={
+                  suggestion.type === "good"
+                    ? "/icons/check.svg"
+                    : "/icons/warning.svg"
+                }
                 alt={suggestion.type === "good" ? "Check" : "Warning"}
-                className="w-5 h-5 mt-1"
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  marginTop: '4px',
+                  flexShrink: 0
+                }}
               />
-              <p className={suggestion.type === "good" ? "text-green-700" : "text-amber-700"}>
+              <p
+                style={{
+                  fontSize: '16px',
+                  color: suggestion.type === "good" ? '#047857' : '#d97706',
+                  margin: 0,
+                  lineHeight: '1.5'
+                }}
+              >
                 {suggestion.tip}
               </p>
             </div>
@@ -66,12 +210,22 @@ const ATS: React.FC<ATSProps> = ({ score, suggestions }) => {
         </div>
       </div>
 
-      {/* Closing encouragement */}
-      <p className="text-gray-700 italic">
-        Keep refining your resume to improve your chances of getting past ATS filters and into the hands of recruiters.
+      {/* Footer */}
+      <p 
+        style={{
+          color: '#374151',
+          fontStyle: 'italic',
+          textAlign: 'center',
+          margin: 0,
+          fontSize: '16px',
+          lineHeight: '1.5'
+        }}
+      >
+        Keep refining your resume to improve your chances of getting past ATS
+        filters and into the hands of recruiters 🚀
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default ATS
+export default ATS;
